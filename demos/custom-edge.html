@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<style>
+  .g6-tooltip {
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #545454;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 8px;
+    box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+  }
+
+  .gNode {
+    box-sizing: border-box;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .monitorIndicator .title {
+    background: rgb(174, 54, 45);
+  }
+
+  .monitorIndicator .content {
+    border: 1px solid rgb(174, 54, 45);
+  }
+
+  .dataIndicator .title {
+    background: rgb(93, 127, 172);
+  }
+
+  .dataIndicator .content {
+    border: 1px solid rgb(93, 127, 172);
+  }
+
+  .thinking::after {
+    content: '';
+    display: inline-block;
+    height: 2px;
+    background: rgb(255, 217, 0);
+    width: 100%;
+    position: absolute;
+    bottom: 8px;
+    left: 0px;
+  }
+</style>
+
+<body>
+  <div id="mountNode"></div>
+  <script src="../build/g6.js"></script>
+  <script src="../build/fitSize.js"></script>
+  <script src="../build/dagre.js"></script>
+  <script>
+    const rankdir = 'BT';
+    const edgeStyle = {
+      endArrow: true,
+      lineWidth: 2,
+      stroke: 'rgb(76,122,187)',
+    };
+    const edgeShape = 'trident';
+    const data = {
+      nodes: [
+        {
+          id: 1,
+          title: '全站毛利率',
+          shape: 'dom',
+          content: '近一日全站毛利率',
+          style: {
+            fontSize: 20
+          },
+          value: '-21.08%',
+          html: G6.Util.createDom(`<div class="gNode monitorIndicator">
+                                    <div class="title">${'全站毛利率'}</div>
+                                    <div class="content">
+                                      <span>
+                                        <span>${'近一日全站毛利率'}</span>
+                                        <i></i>
+                                      </span>
+                                      <span>
+                                        ${'-21.08%'}
+                                      </span>
+                                    </div>
+                                  </div>`)
+        },
+        {
+          id: 2,
+          title: '渠道分析',
+          shape: 'thinking',
+        },
+        {
+          id: 3,
+          title: '主站毛利率',
+          shape: 'dataIndicator',
+          content: '近一日主站毛利率',
+          value: '-18.09%'
+        },
+        {
+          id: 4,
+          title: '分销毛利率',
+          shape: 'dataIndicator',
+          content: '近一日分销毛利率',
+          value: '-18.09%'
+        },
+        {
+          id: 5,
+          title: 'KKKK',
+          shape: 'ellipse',
+          label: '近一日分销毛利率: 23%',
+        },
+      ],
+      edges: [
+        {
+          source: 1,
+          target: 2,
+          style: edgeStyle,
+          shape: edgeShape,
+          rankdir,
+        },
+        {
+          source: 2,
+          target: 3,
+          style: edgeStyle,
+          shape: edgeShape,
+          rankdir,
+        },
+        {
+          source: 2,
+          target: 4,
+          style: edgeStyle,
+          shape: edgeShape,
+          rankdir,
+        },
+        {
+          source: 4,
+          target: 5,
+          style: edgeStyle,
+          shape: edgeShape,
+          rankdir,
+        },
+      ]
+    };
+    const labelStyle = {
+      style: {
+        // fill: '#fff',
+        fontSize: 14,
+        fontWeight: 'bold'
+      }
+    };
+
+
+    G6.registerNode('monitorIndicator', {
+      drawShape(cfg, group) {
+        const rect = group.addShape('dom', {
+          attrs: {
+            html: G6.Util.createDom(`<div class="gNode monitorIndicator">
+                                    <div class="title">${cfg.title}</div>
+                                    <div class="content">
+                                      <span>
+                                        <span>${cfg.content}</span>
+                                        <i></i>
+                                      </span>
+                                      <span>
+                                        ${cfg.value}
+                                      </span>
+                                    </div>
+                                  </div>`)
+          }
+        });
+        return rect;
+      }
+    }, 'dom');
+
+    G6.registerNode('dataIndicator', {
+      drawShape(cfg, group) {
+        const size = cfg.size || [150, 50];
+        const rect = group.addShape('dom', {
+          attrs: {
+            html: G6.Util.createDom(`
+                  <div class="gNode dataIndicator">
+                    <div class="title">${cfg.title}</div>
+                    ${cfg.content ?
+                `<div class="content">
+                                      <span>
+                                        <span>${cfg.content}</span>
+                                        <i></i>
+                                      </span>
+                                      <span>
+                                        ${cfg.value}
+                                      </span>
+                                    </div>
+                      ` : ''}
+                  </div>`)
+          }
+        });
+        return rect;
+      }
+    }, 'dom');
+
+    G6.registerNode('thinking', {
+      drawShape(cfg, group) {
+        const size = cfg.size || [150, 50];
+        const rect = group.addShape('dom', {
+          attrs: {
+            html: G6.Util.createDom(`<div class="gNode thinking">${cfg.title}</div>`)
+          }
+        });
+        return rect;
+      }
+    }, 'dom');
+
+    G6.Global.nodeStateStyle.selected = {
+      stroke: '#d9d9d9',
+      fill: '#5394ef'
+    };
+
+    const fitSize = new FitSize();
+    const dagreLayout = new Dagre({rankdir});
+
+    const graph = new G6.Graph({
+      container: 'mountNode',
+      width: 900,
+      height: 700,
+      pixelRatio: 2,
+      plugins: [fitSize, dagreLayout],
+      renderer: 'svg',
+      modes: {
+        default: ['drag-canvas', 'click-select', {
+          type: 'tooltip',
+          formatText(model) {
+            return model.title;
+          },
+        }]
+      },
+      // fitView: true
+    });
+    graph.data(data);
+    graph.render();
+  </script>
+</body>
+
+</html>

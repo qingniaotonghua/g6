@@ -7,6 +7,7 @@ const Global = require('./global');
 const G = require('@antv/g/lib');
 const Shape = require('./shape');
 const Behaviors = require('./behavior');
+require('./custom');
 
 const G6 = {
   Graph: require('./graph/graph'),

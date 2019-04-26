@@ -51,8 +51,6 @@ class DagreLayout extends PluginBase {
     g.nodes().forEach((node, i) => {
       coord = g.node(node);
       nodes[i].update({ x: coord.x, y: coord.y });
-      // data.nodes[i].x = coord.x;
-      // data.nodes[i].y = coord.y;
     });
     g.edges().forEach((edge, i) => {
       coord = g.edge(edge);
@@ -61,9 +59,6 @@ class DagreLayout extends PluginBase {
         endPoint: coord.points[coord.points.length - 1],
         controlPoints: coord.points.slice(1, coord.points.length - 1)
       });
-      // data.edges[i].startPoint = coord.points[0];
-      // data.edges[i].endPoint = coord.points[coord.points.length - 1];
-      // data.edges[i].controlPoints = coord.points.slice(1, coord.points.length - 1);
     });
   }
 }
