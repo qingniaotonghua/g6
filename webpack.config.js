@@ -42,6 +42,11 @@ module.exports = {
       amd: '@antv/g6'
     }
   },
+  resolve: {
+    alias: {
+      '@antv/g': '@datapi/g'
+    }
+  },
   module: {
     rules: [
       {
