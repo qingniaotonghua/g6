@@ -7,7 +7,8 @@ module.exports = {
         "module-resolver",
         {
           "alias": {
-            '@antv/g6': './src/index'
+            '@antv/g6': './src/index',
+            '@antv/g': '@datapi/g',
           },
         }
       ],
@@ -21,6 +22,7 @@ module.exports = {
   include: [
     'src/**/*.js',
     'plugins/**/*.js',
+    'test/**/*.js'
   ],
   exclude: /(node_modules|bower_components)/
 }
