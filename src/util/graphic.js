@@ -26,6 +26,15 @@ function traverse(data, fn) {
 const GraphicUtil = {
   getBBox(element, parent) {
     const bbox = element.getBBox();
+    if (!bbox) {
+      console.warn(`can\'t get the bbox of the element ${element}`);
+      return {
+        minX: 0,
+        minY: 0,
+        maxX: 0,
+        maxY: 0
+      };
+    }
     let leftTop = {
       x: bbox.minX,
       y: bbox.minY
