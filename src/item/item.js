@@ -9,7 +9,7 @@ const Global = require('../global');
 const CACHE_BBOX = 'bboxCache';
 const GLOBAL_STATE_STYLE_SUFFIX = 'StateStyle';
 const NAME_STYLE = 'Style'; // cache 缓存的状态属性的名字
-const RESERVED_STYLES = [ 'fillStyle', 'strokeStyle', 'path', 'points', 'img', 'symbol' ];
+const RESERVED_STYLES = ['fillStyle', 'strokeStyle', 'path', 'points', 'img', 'symbol'];
 
 class Item {
   constructor(cfg) {
@@ -258,8 +258,8 @@ class Item {
     const shapeFactory = this.get('shapeFactory');
     const index = states.indexOf(state);
     if (enable) {
-      if (index > -1) {
-        return;
+      if (index > -1 && index < states.length - 1) {
+        states.splice(index, 1);// 调整顺序
       }
       states.push(state);
     } else if (index > -1) {
@@ -282,16 +282,25 @@ class Item {
       return;
     }
     if (Util.isString(states)) {
-      states = [ states ];
+      states = [states];
     }
-    const newStates = originStates.filter(state => {
-      shapeFactory.setState(shape, state, false, self);
+
+    const newStates = [];
+    const deleteStates = [];
+    for (let i = 0; i < originStates.length; i++) {
+      const state = originStates[i];
       if (states.indexOf(state) >= 0) {
-        return false;
+        deleteStates.push(state);
+      }else{
+        newStates.push(state);
       }
-      return true;
-    });
+    }
+
     self.set('states', newStates);
+    if (deleteStates.length !== 0) {
+      shapeFactory.setState(shape, deleteStates[0], false, self);
+    }
+
   }
 
   /**
