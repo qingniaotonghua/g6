@@ -19,9 +19,9 @@ module.exports = {
   },
   getEvents() {
     return {
-      mousedown: 'onMouseDown',
-      mousemove: 'onMouseMove',
-      mouseup: 'onMouseUp',
+      'mousedown': 'onMouseDown',
+      'mousemove': 'onMouseMove',
+      'mouseup': 'onMouseUp',
       'canvas:click': 'clearStates'
     };
   },

@@ -129,7 +129,10 @@ class ItemController {
   setItemState(item, state, enabled) {
     const graph = this.graph;
     if (item.hasState(state) === enabled) {
-      return;
+      const states = item.getStates();
+      if(states.indexOf(state) == states.length - 1 ){// 如果不是最后一个状态也需要更新，将当前状态放置最后一个
+        return;
+      }
     }
     graph.emit('beforeitemstatechange', { item, state, enabled });
     item.setState(state, enabled);
